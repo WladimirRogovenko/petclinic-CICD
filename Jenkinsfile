@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Run 2nd job') {
             steps {
-                echo '=== start run 2nd job ====' 
+                echo '=== start run 2nd job ${environment} $environment ====' 
                 build job: 'Job_for_start_after_main_job', parameters: [string(name: 'environment', value: '${environment}')]
                 echo '=== end run 2nd job  ===='
             }
