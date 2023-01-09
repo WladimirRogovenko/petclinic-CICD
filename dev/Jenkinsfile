@@ -1,0 +1,70 @@
+pipeline {
+
+    parameters {
+        //string(name: 'environment', defaultValue: 'dev', description: 'Workspace/environment file to use for deployment')
+        choice(name: "environment", choices: ["dev", "prod"], description: "Environment dir to use for deployment")
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+        choice(name: "tfAction", choices: ["plan", "apply", "destroy"], description: "Run Terraform plan/apply/destoy")
+    }
+
+
+     environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
+   agent  any
+        options {
+                timestamps ()
+                //ansiColor('xterm')
+            }
+    stages {
+        stage('Git checkout') {
+            steps {
+                 script{
+                        dir("terraform")
+                        {
+                            git branch: 'main', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/FinalProject_Web.git'
+                        }
+                        echo 'git ========='
+                    }
+                }
+            }
+
+        stage('Plan') {
+            steps {
+                sh 'pwd;cd terraform/${environment} ; terraform init -input=false'
+                // sh 'pwd;cd terraform/FinalProject_Web/${environment} ; terraform workspace new ${environment}'
+                // sh 'pwd;cd terraform/FinalProject_Web/${environment} ; terraform workspace select ${environment}'
+                sh 'pwd;cd terraform/${environment} ;terraform plan -input=false -out tfplan'
+                sh 'pwd;cd terraform/${environment} ;terraform show -no-color tfplan > tfplan.txt'
+            }
+        }
+        stage('Approval') {
+           when {
+               not {
+                   equals expected: true, actual: params.autoApprove
+               }
+           }
+
+           steps {
+               script {
+                    def plan = readFile 'terraform/'+params.environment+'/tfplan.txt'
+                    input message: "Do you want to apply the plan?",
+                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+               }
+           }
+       }
+
+        stage('Apply') {
+            steps {
+               script { 
+                if (params.tfAction == 'apply') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction} -input=false tfplan" }
+                if (params.tfAction == 'destroy') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction}" }
+                if (params.tfAction == 'plan') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction}" }
+                echo ' TF Action ========='
+               }
+            }
+        }
+    }
+  }
