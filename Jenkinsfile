@@ -33,9 +33,11 @@ pipeline {
             steps {
                 echo '=== start Test ===='
                 sh 'pwd;cd project/${environment} ; pwd; ls -la'
+                script {
                 def groovy_script = load 'global/groovy/reconnect.groovy'
                 echo 'start Groovy script'
                 groovy_script.groovy_script()
+                }
                 echo '=== end Test ===='
             }
         }
