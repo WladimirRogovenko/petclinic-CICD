@@ -31,7 +31,7 @@ pipeline {
         stage('TerraformCreateNode') {
             steps {
                 sh 'pwd;cd project/${environment} ; terraform init -input=false'
-                sh 'pwd;cd project/${environment} ; terraform apply'
+                sh 'pwd;cd project/${environment} ; terraform apply -auto-approve'
                 sleep(90)
             }
         }
