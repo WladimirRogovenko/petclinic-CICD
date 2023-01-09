@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Run 2nd job') {
             steps {
-                echo '=== start run 2nd job ===='
+                echo '=== start run 2nd job ====' 
                 echo '=== end run 2nd job  ===='
             }
         }
