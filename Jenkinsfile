@@ -28,18 +28,26 @@ pipeline {
                     }
                 }
             }
-
-        stage('Test') {
+        stage('TerraformCreateNode') {
             steps {
-                echo '=== start Test ===='
-                sh 'pwd;cd project/${environment} ; pwd; ls -la'
+                sh 'pwd;cd project/${environment} ; terraform init -input=false'
+                sh 'pwd;cd project/${environment} ; terraform apply'
+                sleep(90)
+            }
+        }
+
+        stage('ReConnectNodes') {
+            steps {
+                echo '=== start ReConnectNodes ===='
+                //sh 'pwd;cd project/${environment} ; pwd; ls -la'
                 //script {
                 //def groovy_script = load 'global/groovy/reconnect.groovy'
                 //def groovy_script = evaluate readTrusted('global/groovy/reconnect.groovy')
                 //echo 'start Groovy script'
                 //groovy_script.groovy_script()
                 //}
-                echo '=== end Test ===='
+                build job: 'ReConnectNodes'
+                echo '=== end ReConnectNodes ===='
             }
         }
         stage('Run 2nd job') {
