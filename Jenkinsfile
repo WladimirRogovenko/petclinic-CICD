@@ -33,13 +33,16 @@ pipeline {
             steps {
                 echo '=== start Test ===='
                 sh 'pwd;cd project/${environment} ; pwd; ls -la'
+                goroovy_script = load 'global/groovy/reconnect.groovy'
+                echo 'start Groovy script'
+                goroovy_script.goroovy_script()
                 echo '=== end Test ===='
             }
         }
         stage('Run 2nd job') {
             steps {
                 echo '=== start run 2nd job  ====' 
-                echo "${environment} $environment"
+                echo "${environment} $environment" //working both ))) becouse must be ""  and may try: env.environment
                 build job: 'Job_for_start_after_main_job', parameters: [string(name: 'environment', value: "${environment}")]
                 echo '=== end run 2nd job  ===='
             }
