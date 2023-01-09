@@ -35,9 +35,9 @@ pipeline {
                 sh 'pwd;cd project/${environment} ; pwd; ls -la'
                 script {
                 //def groovy_script = load 'global/groovy/reconnect.groovy'
-                def groovy_script = evaluate readTrusted('global/groovy/reconnect.groovy')
-                echo 'start Groovy script'
-                groovy_script.groovy_script()
+                //def groovy_script = evaluate readTrusted('global/groovy/reconnect.groovy')
+                //echo 'start Groovy script'
+                //groovy_script.groovy_script()
                 }
                 echo '=== end Test ===='
             }
