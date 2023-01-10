@@ -42,7 +42,7 @@ pipeline {
                script {
                 echo '=== start build petclinic  ==='
                 sh 'whereis mvn' 
-                sh "pwd;cd petclinic; mvn package" 
+                sh "pwd;cd petclinic; pwd; mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic" 
                 echo '=== end build petclinic ==='
                 }
                }
@@ -56,7 +56,7 @@ pipeline {
             steps {
                script {
                 echo '=== start run petclinic  ===' 
-                sh "pwd;cd petclinic; java -jar target/*.jar --server.port=8082" 
+                sh "pwd;cd petclinic; pwd; java -jar target/*.jar --server.port=8082" 
                 echo '=== end run petclinic ==='
                 sleep(60)
                 }
