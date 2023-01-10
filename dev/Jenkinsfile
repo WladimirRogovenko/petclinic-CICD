@@ -38,13 +38,15 @@ pipeline {
             }
         stage('Build') {
             steps {
-               def mvnHome = tool name: 'mvn', type: 'maven' 
-                echo '=== start build petclinic  ==='
-                sh 'whereis mvn'
-                echo "jenkins maven path = ${mvnHome}" 
-                //sh "pwd;cd petclinic; pwd; $M2_HOME/bin/mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic"
-                sh "pwd;cd petclinic; pwd; ${mvnHome}/bin/mvn package"
-                echo '=== end build petclinic ==='
+                script {
+                    def mvnHome = tool name: 'mvn', type: 'maven' 
+                    echo '=== start build petclinic  ==='
+                    sh 'whereis mvn'
+                    echo "jenkins maven path = ${mvnHome}" 
+                    //sh "pwd;cd petclinic; pwd; $M2_HOME/bin/mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic"
+                    sh "pwd;cd petclinic; pwd; ${mvnHome}/bin/mvn package"
+                    echo '=== end build petclinic ==='
+                }
                }
             }
         stage ('Tests') {
