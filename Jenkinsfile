@@ -11,7 +11,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
-   agent  any
+    agent { label 'jenkins-master' }
         options {
                 timestamps ()
             }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh 'pwd;cd project/${environment} ; terraform init -input=false'
                 sh 'pwd;cd project/${environment} ; terraform apply -auto-approve'
-                sleep(90)
+                sleep(50)
             }
         }
 
