@@ -40,7 +40,8 @@ pipeline {
         stage('Build') {
             steps {
                script {
-                echo '=== start build petclinic  ===' 
+                echo '=== start build petclinic  ==='
+                sh 'whereis mvn' 
                 sh "pwd;cd petclinic; mvn package" 
                 echo '=== end build petclinic ==='
                 }
