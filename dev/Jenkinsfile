@@ -6,7 +6,10 @@ pipeline {
        choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
     }
 
-
+     environment {
+        JAVA_HOME='/opt/jdk-19.0.1'
+        M2_HOME='/opt/apache-maven-3.8.6'
+    }
    agent  { label 'maven' }
         options {
                 timestamps ()
@@ -42,7 +45,7 @@ pipeline {
                script {
                 echo '=== start build petclinic  ==='
                 sh 'whereis mvn' 
-                sh "pwd;cd petclinic; pwd; mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic" 
+                sh "pwd;cd petclinic; pwd; $M2_HOME/bin/mvn package" //-f /home/ubuntu/workspace/petclinic-build/petclinic
                 echo '=== end build petclinic ==='
                 }
                }
