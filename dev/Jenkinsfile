@@ -1,70 +1,64 @@
+// petclinic dev or main
 pipeline {
 
     parameters {
-        //string(name: 'environment', defaultValue: 'dev', description: 'Workspace/environment file to use for deployment')
-        choice(name: "environment", choices: ["dev", "prod"], description: "Environment dir to use for deployment")
-        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
-        choice(name: "tfAction", choices: ["plan", "apply", "destroy"], description: "Run Terraform plan/apply/destoy")
+       choice(name: "environment_project", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+       choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
     }
 
 
-     environment {
-        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-    }
-
-   agent  any
+   agent  { label 'maven' }
         options {
                 timestamps ()
-                //ansiColor('xterm')
             }
     stages {
-        stage('Git checkout') {
+        stage('Git checkout project') {
             steps {
                  script{
-                        dir("terraform")
+                        echo '=== start Git chekout project ==='
+                        dir("project")
                         {
-                            git branch: 'main', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/FinalProject_Web.git'
+                            git branch: '${environment_project}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic-CICD.git'
                         }
-                        echo 'git ========='
+                        echo '=== end Git chekout project ==='
                     }
                 }
             }
-
-        stage('Plan') {
+        stage('Git checkout petclinic source') {
             steps {
-                sh 'pwd;cd terraform/${environment} ; terraform init -input=false'
-                // sh 'pwd;cd terraform/FinalProject_Web/${environment} ; terraform workspace new ${environment}'
-                // sh 'pwd;cd terraform/FinalProject_Web/${environment} ; terraform workspace select ${environment}'
-                sh 'pwd;cd terraform/${environment} ;terraform plan -input=false -out tfplan'
-                sh 'pwd;cd terraform/${environment} ;terraform show -no-color tfplan > tfplan.txt'
+                 script{
+                        echo '=== start Git chekout petclinic source ==='
+                        dir("petclinic")
+                        {
+                            git branch: '${environment_code}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic.git'
+                        }
+                        echo '=== end Git chekout petclinic source ==='
+                    }
+                }
+            }
+        stage('Build') {
+            steps {
+               script {
+                echo '=== start build petclinic  ===' 
+                sh "pwd;cd petclinic; mvn package" 
+                echo '=== end build petclinic ==='
+                }
+               }
+            }
+        stage ('Tests') {
+            steps {
+              echo 'some tests must be here ))'  
             }
         }
-        stage('Approval') {
-           when {
-               not {
-                   equals expected: true, actual: params.autoApprove
-               }
-           }
-
-           steps {
-               script {
-                    def plan = readFile 'terraform/'+params.environment+'/tfplan.txt'
-                    input message: "Do you want to apply the plan?",
-                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
-               }
-           }
-       }
-
-        stage('Apply') {
+        stage('Run') {
             steps {
-               script { 
-                if (params.tfAction == 'apply') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction} -input=false tfplan" }
-                if (params.tfAction == 'destroy') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction}" }
-                if (params.tfAction == 'plan') { sh "pwd;cd terraform/${environment} ; terraform ${tfAction}" }
-                echo ' TF Action ========='
+               script {
+                echo '=== start run petclinic  ===' 
+                sh "pwd;cd petclinic; java -jar target/*.jar --server.port=8082" 
+                echo '=== end run petclinic ==='
+                sleep(60)
+                }
                }
-            }
+            }            
         }
     }
-  }
