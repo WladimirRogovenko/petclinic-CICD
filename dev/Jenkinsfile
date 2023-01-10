@@ -12,7 +12,7 @@ pipeline {
                 timestamps ()
             }
     stages {
-        stage('Git checkout project') {
+        /*stage('Git checkout project') {
             steps {
                  script{
                         echo '=== start Git chekout project ==='
@@ -24,6 +24,7 @@ pipeline {
                     }
                 }
             }
+        */
         stage('Git checkout petclinic source') {
             steps {
                  script{
