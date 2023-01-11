@@ -53,7 +53,7 @@ pipeline {
                     //sh "${mvnHome}/bin/mvn --version"
                     //echo "jenkins maven path = ${mvnHome}" 
                     //sh "pwd;cd petclinic; pwd; $M2_HOME/bin/mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic"
-                    //sh "pwd;cd petclinic; pwd; ${mvnHome}/bin/mvn package"
+                    sh "pwd;cd petclinic; pwd; mvn package"
                     echo '=== end build petclinic ==='
                 }
                }
