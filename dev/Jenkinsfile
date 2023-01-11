@@ -5,7 +5,9 @@ pipeline {
        choice(name: "environment_project", choices: ["dev", "main"], description: "Environment dir to use for deployment")
        choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
     }
-   
+   environment {
+    JAVA_HOME='/opt/jdk-19.0.1'
+   }
    agent  { label 'maven' }
         options {
                 timestamps ()
@@ -42,9 +44,11 @@ pipeline {
                     def mvnHome = tool name: 'mvn', type: 'maven' 
                     echo '=== start build petclinic  ==='
                     sh 'whereis mvn'
+                    sh 'mvn --version'
+                    sh "${mvnHome}/bin/mvn --version"
                     echo "jenkins maven path = ${mvnHome}" 
                     //sh "pwd;cd petclinic; pwd; $M2_HOME/bin/mvn package -f /home/ubuntu/workspace/petclinic-build/petclinic"
-                    sh "pwd;cd petclinic; pwd; ${mvnHome}/bin/mvn package"
+                    //sh "pwd;cd petclinic; pwd; ${mvnHome}/bin/mvn package"
                     echo '=== end build petclinic ==='
                 }
                }
