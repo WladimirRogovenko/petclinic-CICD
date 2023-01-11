@@ -71,7 +71,7 @@ pipeline {
                 sh 'java --version'
                 echo "$JAVA_HOME/bin java version"
                 sh "$JAVA_HOME/bin/java --version"
-                sh "pwd;cd petclinic; pwd; $JAVA_HOME/bin/java -jar target/*.jar --server.port=80" 
+                sh "pwd;cd petclinic; pwd; $JAVA_HOME/bin/java -jar target/*.jar --server.port=8081" 
                 echo '=== end run petclinic ==='
                 //sleep(60)
                 }

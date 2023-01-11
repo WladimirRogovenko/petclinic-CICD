@@ -16,7 +16,7 @@ data "aws_subnets" "default" {
   }
 }
 
-#create Security Group for 80, 22 ports
+#create Security Group for 80, 8081, 22 ports
 resource "aws_security_group" "secgrp-Linux_80_22" {
   name = "secgrp-Linux_80_22"
   description = "Allow 80 and 22 ports. For Linux web server"
@@ -24,6 +24,12 @@ resource "aws_security_group" "secgrp-Linux_80_22" {
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+    ingress {
+    from_port   = 8081
+    to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
