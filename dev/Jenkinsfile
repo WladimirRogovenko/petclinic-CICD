@@ -67,7 +67,11 @@ pipeline {
             steps {
                script {
                 echo '=== start run petclinic  ===' 
-                sh "pwd;cd petclinic; pwd; java -jar target/*.jar --server.port=8082" 
+                echo 'java version'
+                sh 'java --version'
+                echo "$JAVA_HOME java version"
+                sh "$JAVA_HOME/java --version"
+                sh "pwd;cd petclinic; pwd; $JAVA_HOME/java -jar target/*.jar --server.port=8082" 
                 echo '=== end run petclinic ==='
                 sleep(60)
                 }
