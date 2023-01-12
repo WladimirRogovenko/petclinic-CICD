@@ -9,9 +9,7 @@ pipeline {
     JAVA_HOME='/opt/jdk-19.0.1'
    }
    agent  { label 'maven' }
-   tools { 
-        maven 'mvn'
-        }
+   tools {  maven 'mvn'   }
         options {
                 timestamps ()
             }
@@ -58,6 +56,14 @@ pipeline {
               echo 'some tests must be here ))'  
             }
         }
+        stage ('Archive') {
+            steps {
+              echo '=== start archiving artifacts petclinic  ==='
+              archiveArtifacts artifacts: 'petclinic/target/*.jar', followSymlinks: false  
+              echo '=== end archiving artifacts petclinic  ==='
+            }
+        }
+        /*
         stage('Run') {
             steps {
                script {
@@ -71,6 +77,7 @@ pipeline {
                 //sleep(60)
                 }
                }
-            }            
+            }
+        */            
         }
     }
