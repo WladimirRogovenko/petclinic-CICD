@@ -59,7 +59,8 @@ pipeline {
         stage ('Archive') {
             steps {
               echo '=== start archiving artifacts petclinic  ==='
-              archiveArtifacts artifacts: 'petclinic/target/*.jar', followSymlinks: false  
+              //archiveArtifacts artifacts: 'petclinic/target/*.jar', followSymlinks: false  
+              archiveArtifacts artifacts: '**/target/*.jar', followSymlinks: false, fingerprint: false
               echo '=== end archiving artifacts petclinic  ==='
             }
         }
