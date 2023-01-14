@@ -61,6 +61,11 @@ pipeline {
               echo '=== start archiving artifacts petclinic  ==='
               //archiveArtifacts artifacts: 'petclinic/target/*.jar', followSymlinks: false  
               archiveArtifacts artifacts: '**/target/*.jar', followSymlinks: false, fingerprint: false
+              withCredentials([<object of type com.cloudbees.jenkins.plugins.awscredentials.AmazonWebServicesCredentialsBinding>]) {
+                    // some block
+                    sh "aws s3 ls"
+                    sh "aws s3 cp petclinic/target/*.jar s3://p-petclinic2023-jenkins-archive-artifacts/last_build/ "
+                }
               echo '=== end archiving artifacts petclinic  ==='
             }
         }
