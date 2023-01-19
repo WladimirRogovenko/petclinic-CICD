@@ -6,7 +6,7 @@ pipeline {
        choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
     }
    environment {
-    JAVA_HOME='/opt/jdk-19.0.1'
+    JAVA_HOME='/opt/jdk-19.0.2'
    }
    agent  { label 'maven' }
    tools {  maven 'mvn'   }
@@ -14,19 +14,6 @@ pipeline {
                 timestamps ()
             }
     stages {
-        /*stage('Git checkout project') {
-            steps {
-                 script{
-                        echo '=== start Git chekout project ==='
-                        dir("project")
-                        {
-                            git branch: '${environment_project}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic-CICD.git'
-                        }
-                        echo '=== end Git chekout project ==='
-                    }
-                }
-            }
-        */
         stage('Git checkout petclinic source') {
             steps {
                  script{
