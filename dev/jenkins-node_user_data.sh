@@ -14,7 +14,7 @@ echo "== Install Java-JDK 19 version =="
 # from https://www.oracle.com/java/technologies/downloads/#jdk19-linux
 wget https://download.oracle.com/java/19/latest/jdk-19_linux-x64_bin.tar.gz
 tar -xvf jdk-19_linux-x64_bin.tar.gz
-sudo mv jdk-19.0.1 /opt/
+sudo mv jdk-19.0.2 /opt/
 rm jdk-19_linux-x64_bin.tar.gz
 
 echo "======== Install Java-jdk11 ========"
@@ -33,7 +33,7 @@ echo "=== finish Java and maven install ==="
 
 echo 'Create java_maven.sh =========================='
 cat << EOF > /etc/profile.d/java_maven.sh
-JAVA_HOME='/opt/jdk-19.0.1'
+JAVA_HOME='/opt/jdk-19.0.2'
 PATH="\$JAVA_HOME/bin:\$PATH"
 export PATH
 
