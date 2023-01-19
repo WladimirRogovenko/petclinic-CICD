@@ -4,6 +4,11 @@ echo "===== Run user_data file for Jenkins Node 1 ======="
 echo '===== update, Install openjdk 19, git, maven =========================='
 sudo  apt update 
 
+echo "===== AWS CLI install ======="
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
 echo "== Install Java-JDK 19 version =="
 #
 # from https://www.oracle.com/java/technologies/downloads/#jdk19-linux
