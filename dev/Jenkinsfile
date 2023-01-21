@@ -49,8 +49,7 @@ pipeline {
               //archiveArtifacts artifacts: 'petclinic/target/*.jar', followSymlinks: false  
               archiveArtifacts artifacts: '**/target/*.jar', followSymlinks: false, fingerprint: false
               withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                    // some block
-                    sh "aws s3 ls"
+                    // copy LAST archive to /last_build/ (and replace if exists)
                     sh "aws s3 cp petclinic/target/*.jar s3://p-petclinic2023-jenkins-archive-artifacts/last_build/ "
                 } 
               echo '=== end archiving artifacts petclinic  ==='

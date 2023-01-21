@@ -1,0 +1,40 @@
+//dev-CD
+pipeline {
+
+    parameters {
+       choice(name: "environment_project", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+       choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+    }
+
+
+    agent { label 'jenkins-master' }
+        options {
+                timestamps ()
+            }
+    stages {
+        stage('Git checkout project') {
+            steps {
+                 script{
+                        echo '=== start Git chekout project petclinic-source ==='
+                        echo 'environment_project=${environment_project}'
+                        dir("petclinic")
+                        {
+                            git branch: '${environment_project}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic.git'
+                        }
+                        echo '=== end Git chekout project petclinic-source ==='
+                    }
+                }
+            }  
+        stage('Get last artefact from S3') {
+            steps {
+                echo '=== Get last artefact from S3 ==='
+                sh 'pwd;cd petclinic-CICD/${environment}/CD ; pwd; ls -la'
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                    // copy LAST archive to /last_build/ (and replace if exists)
+                    sh "aws s3 cp s3://p-petclinic2023-jenkins-archive-artifacts/last_build/*.jar ./app.jar "
+                } 
+                sh 'pwd;cd petclinic-CICD/${environment} ; pwd; ls -la'
+            }
+        }
+    }
+  }
