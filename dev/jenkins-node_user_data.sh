@@ -17,9 +17,9 @@ echo "== Install Java-JDK 19 version =="
 # from https://www.oracle.com/java/technologies/downloads/#jdk19-linux
 # latest Java: https://download.oracle.com/java/19/latest/jdk-19_linux-x64_bin.tar.gz
 wget https://download.oracle.com/java/19/archive/jdk-19.0.2_linux-x64_bin.tar.gz
-tar -xvf jdk-19_linux-x64_bin.tar.gz
+tar -xvf jdk-19.0.2_linux-x64_bin.tar.gz
 sudo mv jdk-19.0.2 /opt/
-rm jdk-19_linux-x64_bin.tar.gz
+rm jdk-19.0.2_linux-x64_bin.tar.gz
 
 echo "======== Install Java-jdk11 ========"
 sudo apt -y install openjdk-11-jre-headless  #openjdk-11-jre-headless

@@ -40,13 +40,6 @@ pipeline {
         stage('ReConnectNodes') {
             steps {
                 echo '=== start ReConnectNodes ===='
-                //sh 'pwd;cd project/${environment} ; pwd; ls -la'
-                //script {
-                //def groovy_script = load 'global/groovy/reconnect.groovy'
-                //def groovy_script = evaluate readTrusted('global/groovy/reconnect.groovy')
-                //echo 'start Groovy script'
-                //groovy_script.groovy_script()
-                //}
                 build job: 'ReConnectNodes'
                 echo '=== end ReConnectNodes ===='
             }

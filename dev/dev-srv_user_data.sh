@@ -7,15 +7,18 @@ pwd
 
 echo "===== AWS CLI install ======="
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-sudo apt install unzip
+sudo apt install unzip -y
 unzip awscliv2.zip
 sudo ./aws/install
 
 echo "===== docker-compose install ======="
-sudo apt install docker docker-compose
+sudo apt install docker docker-compose -y
+sudo usermod -aG docker $USER
 
-#echo "=== add github known_hosts ==="
-#sudo ssh-keyscan github.com >> /home/ubuntu/.ssh/known_hosts
+echo "===== python3-pip install ======="
+sudo apt install python3-pip -y
+#python3 -m pip install boto3  #this installs in playbook
+#python3 -m pip install botocore
 
 #echo '===== Create my_soft.sh =========================='
 #cat << EOF > /etc/profile.d/my_soft.sh

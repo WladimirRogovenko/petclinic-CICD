@@ -36,3 +36,13 @@ output "aws_instance_Jenkins-node_private_ip" {
   description = "Private IP address of Jenkins-node agent instance"
   value = aws_instance.jenkins-node-1.private_ip
 }
+
+output "aws_instance_dev-srv_public_ip" {
+  description = "Public IP address of Jenkins-node agent instance"
+  value     = aws_instance.dev-srv[0].public_ip
+}
+
+output "aws_instance_dev-srv_private_ip" {
+  description = "Private IP address of Jenkins-node agent instance"
+  value = aws_instance.dev-srv[0].private_ip
+}

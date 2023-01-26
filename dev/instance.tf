@@ -5,7 +5,7 @@ resource "aws_instance" "jenkins-node-1" {
   key_name = "Jenkins-Nodes-key"                # jankins has this key too
   vpc_security_group_ids = [aws_security_group.secgrp-Linux_80_22.id]
   subnet_id = sort(data.aws_subnets.default.ids)[0]
-  private_ip = "172.31.47.1"
+  private_ip = var.jenkins-node-1-privat_ip    #"172.31.47.1"
   associate_public_ip_address = true
 
   user_data = file("jenkins-node_user_data.sh")
@@ -25,7 +25,7 @@ resource "aws_instance" "dev-srv" {
   key_name = "Jenkins-Nodes-key"                # jankins has this key too
   vpc_security_group_ids = [aws_security_group.secgrp-Linux_80_22.id]
   subnet_id = sort(data.aws_subnets.default.ids)[0]
-  private_ip = "172.31.47.2"
+  private_ip = var.dev-srv-privat_ip  #"172.31.47.2"
   associate_public_ip_address = true
 
   user_data = file("dev-srv_user_data.sh")
