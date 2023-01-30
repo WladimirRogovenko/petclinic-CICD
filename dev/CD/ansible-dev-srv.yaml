@@ -5,7 +5,7 @@
   become_method: sudo
   vars:
     #/home/ubuntu
-    srv_home_dir: "./"   
+    srv_home_dir: "."   
     git_key_path: "{{ srv_home_dir }}/git-key"
     git_key_name: jenkins-git_key
     git_key_source_path: /home/ec2-user/ansible-test
