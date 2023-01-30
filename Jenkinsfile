@@ -47,9 +47,12 @@ pipeline {
                   while ! ping -c 1 -n -w 1 172.31.47.1 &> /dev/null
                   do
                     sleep 1
-                  done       
+                    printf "%c" "."
+                  done
+                  printf "\n%s\n"  "Server is back online"
                 '''
-            }
+                sleep 20
+            }  
         }
         stage('ReConnectNodes') {
             steps {
