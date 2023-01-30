@@ -73,9 +73,9 @@
         msg="{{ getresult.msg }}" 
       when: getresult.changed
 
-    - name: create {{ docker_path }}r directory
+    - name: create {{ docker_path }} directory
       file:
-        path: {{ docker_path }}
+        path: "{{ docker_path }}"
         state: directory
         owner: root
         group: root
