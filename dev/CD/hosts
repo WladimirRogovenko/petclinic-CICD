@@ -1,0 +1,4 @@
+[dev-servers]
+dev-srv ansible_host=172.31.47.2
+
+

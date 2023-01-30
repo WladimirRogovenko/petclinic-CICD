@@ -1,0 +1,109 @@
+---
+- hosts: all
+  name: Deploy from S3 artifact in docker container and run +DB
+  become: true
+  become_method: sudo
+  vars:
+    #/home/ubuntu
+    srv_home_dir: "./"   
+    git_key_path: "{{ srv_home_dir }}/git-key"
+    git_key_name: jenkins-git_key
+    git_key_source_path: /home/ec2-user/ansible-test
+    app_repo_path: "{{ srv_home_dir }}/petclinic"
+    git_repo_name: git@github.com:WladimirRogovenko/petclinic.git
+    s3_buket_name: p-petclinic2023-jenkins-archive-artifacts
+    s3_last_artifact_path: "{{ srv_home_dir }}/app"
+    s3_last_artifact_save_name: app.jar
+    docker_path: "{{ srv_home_dir }}/docker"
+  tasks:
+      # install boto3 on server for aws_s3
+    - name: "install boto3 on server for aws_s3"
+      command: python3 -m pip install boto3
+    - name: Create Directory {{ git_key_path }} if not exists
+      file: 
+        path: "{{ git_key_path }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+    - name: Copy Git key to dev-srv
+      copy:
+        src: "{{ git_key_source_path }}/{{ git_key_name }}"
+        dest: "{{ git_key_path }}/{{ git_key_name }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+
+    - name: "Clone repo petclinic {{ git_repo_name }}"
+      git:
+        accept_hostkey: yes
+        clone: yes
+        force: yes
+        version: dev
+        dest: "{{ app_repo_path }}"
+        key_file: "{{ git_key_path }}/{{ git_key_name }}"
+        repo: "{{ git_repo_name }}"
+    - name: "Get filenames in S3 last_build"
+      aws_s3:
+        bucket: "{{ s3_buket_name }}"
+        mode: list
+        prefix: "last_build"
+        aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+      register: listresult
+    - debug:
+        msg={{ listresult.s3_keys[0] }}
+    - name: Create Directory {{ s3_last_artifact_path }} if not exists
+      file: 
+        path: "{{ s3_last_artifact_path }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+    - name: "Get LAST artifact from S3 and save as {{s3_last_artifact_save_name}}"
+      aws_s3:
+        bucket: "{{ s3_buket_name }}"
+        object: "{{ listresult.s3_keys[0] }}"
+        dest: "{{ s3_last_artifact_path }}/{{ s3_last_artifact_save_name }}"
+        mode: get
+        aws_access_key: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        aws_secret_key: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+      register: getresult
+    - debug:
+        msg="{{ getresult.msg }}" 
+      when: getresult.changed
+
+    - name: create {{ docker_path }}r directory
+      file:
+        path: {{ docker_path }}
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+    - name: copy Dockerfile to dev-srv /home/ubuntu/docker/
+      copy:
+        src: "{{git_key_source_path}}/Dockerfile"
+        dest: "{{ docker_path }}/Dockerfile"
+        owner: root
+        group: root
+        mode: '0644'
+    - name: "Docker build container spring-openjdk:1.3 from Dockerfile"
+      docker_image:
+        name: spring-openjdk:1.3
+        build:
+          path: "{{ docker_path }}"
+        source: build
+        state: present
+    - name: copy docker-compose.yml to dev-srv {{ docker_path }}
+      copy:
+        src: "{{git_key_source_path}}/docker-compose.yml"
+        dest: "{{ docker_path }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0644'
+    - name: deploy Docker Compose stack
+      docker_compose:
+        project_src: "{{ docker_path }}"
+        restarted: true
+        files:
+        - docker-compose.yml

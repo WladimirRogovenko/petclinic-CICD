@@ -6,7 +6,7 @@ services:
     ports:
       - 8082:8082
     volumes:
-      - /home/rvv/docker/docker_volume/app:/opt/app:ro
+      - /home/ubuntu/app:/opt/app:ro
     environment:
       spring.datasource.url: "jdbc:mysql://mysql:3306/petclinic"
 
@@ -21,5 +21,5 @@ services:
       - MYSQL_PASSWORD=petclinic
       - MYSQL_DATABASE=petclinic
     volumes:
-      - "./conf.d:/etc/mysql/conf.d"
-      - "./mysql:/var/lib/mysql"
+      - "/home/ubuntu/petclinic/mysql_db/conf.d:/etc/mysql/conf.d"
+      - "/home/ubuntu/petclinic/mysql_db/mysql:/var/lib/mysql"
