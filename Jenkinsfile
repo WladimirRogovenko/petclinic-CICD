@@ -17,6 +17,7 @@ pipeline {
                 timestamps ()
             }
     stages {
+        /*
         stage('Git checkout project') {
             steps {
                  script{
@@ -29,11 +30,12 @@ pipeline {
                     }
                 }
             }
-        stage('TerraformCreateNode') {
+        */
+        stage('Terraform') {
             steps {
-                sh 'pwd;cd project/${environment} ; terraform init -input=false'
-                sh 'pwd;cd project/${environment} ; terraform apply -auto-approve'
-                sleep(50)
+                sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
+                sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
+                sleep(100)
             }
         }
 
@@ -41,8 +43,6 @@ pipeline {
             steps {
                 echo '=== start ReConnectNodes ===='
                 build job: 'ReConnectNodes'
-		echo '--- second run ----'
-		build job: 'ReConnectNodes'
                 echo '=== end ReConnectNodes ===='
             }
         }
