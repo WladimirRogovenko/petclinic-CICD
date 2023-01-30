@@ -39,6 +39,12 @@ resource "aws_security_group" "secgrp-Linux_80_22" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    from_port = 8 #this strange syntax to allow ping
+    to_port = -1
+    protocol = "icmp"
+    cidr_blocks = ["172.31.32.0/20"]
+  }
   egress {
     from_port        = 0
     to_port          = 0

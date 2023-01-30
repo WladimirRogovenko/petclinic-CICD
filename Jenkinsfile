@@ -35,14 +35,27 @@ pipeline {
             steps {
                 sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
                 sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
-                sleep(100)
+                //sleep(120)
             }
         }
-
+        stage('Wait Node-1 OnLine') {
+            options {
+              timeout(time: 3, unit: 'MINUTES')   // timeout on this stage
+          }
+            steps {
+                sh '''#!/bin/bash
+                  while ! ping -c 1 -n -w 1 172.31.47.1 &> /dev/null
+                  do
+                    sleep 1
+                  done       
+                '''
+            }
+        }
         stage('ReConnectNodes') {
             steps {
                 echo '=== start ReConnectNodes ===='
                 build job: 'ReConnectNodes'
+                //build job: 'ReConnectNodes'
                 echo '=== end ReConnectNodes ===='
             }
         }

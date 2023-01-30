@@ -21,7 +21,6 @@ output "aws_subnet_id" {
   value     = sort(data.aws_subnets.default.ids)[0]
 }
 
-
 output "aws_security_group_id" {
   description = "Create new SG with ports 80,22"
   value     = aws_security_group.secgrp-Linux_80_22.id
