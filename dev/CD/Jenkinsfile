@@ -24,9 +24,19 @@ pipeline {
                 //sh 'ls /home/ec2-user/.local/lib/python3.11/site-packages/ansible/'
                 sh 'ansible --version'
                 sh 'pwd'
-                ansiblePlaybook becomeUser: 'ubuntu', credentialsId: 'Jenkins-Nodes-key', installation: 'ansible', inventory: 'dev/CD/hosts', playbook: 'dev/CD/ansible-dev-srv.yaml', disableHostKeyChecking: true
-                echo '=== ansible finish ===='
+                //ansiblePlaybook becomeUser: 'ubuntu', credentialsId: 'Jenkins-Nodes-key', installation: 'ansible', inventory: 'dev/CD/hosts', playbook: 'dev/CD/ansible-dev-srv.yaml', disableHostKeyChecking: true
+               withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {   
+                ansiblePlaybook becomeUser: 'ubuntu',
+                credentialsId: 'Jenkins-Nodes-key',
+                installation: 'ansible',
+                inventory: 'dev/CD/hosts',
+                playbook: 'dev/CD/ansible-dev-srv.yaml',
+                disableHostKeyChecking: true
+                //,
+                //extras: '-e AWS_ACCESS_KEY_ID=$T_AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY = $T_AWS_SECRET_ACCESS_KEY'
                 }
-            }  
+                echo '=== ansible finish ===='
+            }
+        }  
     }
-  }
+}
