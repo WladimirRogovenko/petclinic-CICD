@@ -41,6 +41,8 @@ pipeline {
             steps {
                 echo '=== start ReConnectNodes ===='
                 build job: 'ReConnectNodes'
+		echo '--- second run ----'
+		build job: 'ReConnectNodes'
                 echo '=== end ReConnectNodes ===='
             }
         }
