@@ -5,7 +5,7 @@
   become_method: sudo
   vars:
     #/home/ubuntu
-    srv_home_dir: "."   
+    srv_home_dir: "{{ lookup('env','HOME') }}"   
     git_key_path: "{{ srv_home_dir }}/git-key"
     git_key_name: jenkins-git_key
     git_key_source_path: /home/ec2-user/ansible-test
@@ -33,7 +33,8 @@
         owner: ubuntu
         group: ubuntu
         mode: 0644
-
+#    - name: "Change current dit to  {{srv_home_dir}}"
+#      command: "cd {{srv_home_dir}}"
     - name: "Clone repo petclinic {{ git_repo_name }}"
       git:
         accept_hostkey: yes
