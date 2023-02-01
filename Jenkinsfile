@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Wait Node-1 OnLine') {
             options {
-              timeout(time: 3, unit: 'MINUTES')   // timeout on this stage
+              timeout(time: 5, unit: 'MINUTES')   // timeout on this stage
           }
             steps {
                 sh '''#!/bin/bash
@@ -51,7 +51,7 @@ pipeline {
                   done
                   printf "\n%s\n"  "Server is back online"
                 '''
-                sleep 20
+                sleep 120
             }  
         }
         stage('ReConnectNodes') {
