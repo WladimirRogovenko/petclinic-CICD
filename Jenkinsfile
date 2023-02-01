@@ -1,3 +1,4 @@
+import hudson.model.*
 pipeline {
 
     parameters {
@@ -40,9 +41,20 @@ pipeline {
         }
         stage('Wait Node-1 OnLine') {
             options {
-              timeout(time: 5, unit: 'MINUTES')   // timeout on this stage
+              timeout(time: 4, unit: 'MINUTES')   // timeout on this stage
           }
             steps {
+                while (hudson.model.Hudson.instance.getNode("jenkins-node-1").toComputer().isOnline()==false)
+                    {
+                        echo "sleep 10 sec and try ReConnect to Jenkins-Node-1"
+                        sleep 10
+                        build job: 'ReConnectNodes'
+                        echo "=== ReConnectNodes finished ==="
+                    }
+
+
+
+            /*
                 sh '''#!/bin/bash
                   while ! ping -c 1 -n -w 1 172.31.47.1 &> /dev/null
                   do
@@ -52,6 +64,7 @@ pipeline {
                   printf "\n%s\n"  "Server is back online"
                 '''
                 sleep 120
+            */
             }  
         }
         stage('ReConnectNodes') {
