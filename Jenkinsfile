@@ -44,7 +44,7 @@ pipeline {
               timeout(time: 4, unit: 'MINUTES')   // timeout on this stage
             }
             steps {
-                step {
+               
                     script {
                         while (hudson.model.Hudson.instance.getNode("jenkins-node-1").toComputer().isOnline()==false)
                             {
@@ -54,7 +54,7 @@ pipeline {
                                 echo "=== ReConnectNodes finished ==="
                             }
                     }
-                }
+               
 
             /*
                 sh '''#!/bin/bash
@@ -69,6 +69,7 @@ pipeline {
             */
             }  
         }
+
         stage('ReConnectNodes') {
             steps {
                 echo '=== start ReConnectNodes ===='
