@@ -18,20 +18,6 @@ pipeline {
                 timestamps ()
             }
     stages {
-        /*
-        stage('Git checkout project') {
-            steps {
-                 script{
-                        echo '=== start Git chekout project ==='
-                        dir("project")
-                        {
-                            git branch: '${environment}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic-CICD.git'
-                        }
-                        echo '=== end Git chekout project ==='
-                    }
-                }
-            }
-        */
         stage('Terraform') {
             steps {
                 sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
@@ -41,43 +27,23 @@ pipeline {
         }
         stage('Wait Node-1 OnLine') {
             options {
-              timeout(time: 4, unit: 'MINUTES')   // timeout on this stage
+              timeout(time: 5, unit: 'MINUTES')   // timeout on this stage
             }
             steps {
                
                     script {
                         while (hudson.model.Hudson.instance.getNode("jenkins-node-1").toComputer().isOnline()==false)
                             {
-                                echo "sleep 10 sec and try ReConnect to Jenkins-Node-1"
-                                sleep 10
+                                echo "=== try ReConnect to Jenkins-Node-1 and sleep 10 sec"
                                 build job: 'ReConnectNodes'
+                                sleep 10
                                 echo "=== ReConnectNodes finished ==="
                             }
                     }
-               
 
-            /*
-                sh '''#!/bin/bash
-                  while ! ping -c 1 -n -w 1 172.31.47.1 &> /dev/null
-                  do
-                    sleep 1
-                    printf "%c" "."
-                  done
-                  printf "\n%s\n"  "Server is back online"
-                '''
-                sleep 120
-            */
             }  
         }
 
-        stage('ReConnectNodes') {
-            steps {
-                echo '=== start ReConnectNodes ===='
-                build job: 'ReConnectNodes'
-                //build job: 'ReConnectNodes'
-                echo '=== end ReConnectNodes ===='
-            }
-        }
         stage('Run 2nd job') {
             steps {
                 echo '=== start run 2nd job  ====' 
