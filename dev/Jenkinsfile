@@ -26,6 +26,21 @@ pipeline {
                     }
                 }
             }
+        stage('Biild number stemp') {
+            steps {
+            sh 'echo "GitURL ${GIT_URL} Branch name ${GIT_BRANCH} Build # ${BUILD_NUMBER} Date: `date` " >> petclinic/src/main/resources/templates/welcome.html'
+            }
+        }
+        stage ('Tests') {
+            steps {
+                script {
+                    echo '=== start test petclinic  ==='
+                    sh "pwd;cd petclinic; pwd; mvn clean test surefire-report:report"
+                    echo '=== end test petclinic  ==='
+                }
+              echo '=== end tests stage===='  
+            }
+        }
         stage('Build') {
             steps {
                 script {
@@ -38,11 +53,7 @@ pipeline {
                 }
                }
             }
-        stage ('Tests') {
-            steps {
-              echo 'some tests must be here ))'  
-            }
-        }
+
         stage ('Archive') {
             steps {
               echo '=== start archiving artifacts petclinic  ==='
