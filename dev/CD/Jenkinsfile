@@ -1,10 +1,10 @@
 //dev-CD-pipeline
 pipeline {
 
-    //parameters {
+    parameters {
        choice(name: "environment_project", choices: ["dev", "main"], description: "Environment dir to use for deployment")
-    //   choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
-    //}
+       choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+    }
 
 
     agent { label 'jenkins-master' }
