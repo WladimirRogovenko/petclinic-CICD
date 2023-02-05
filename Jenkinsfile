@@ -21,9 +21,9 @@ pipeline {
     stages {
         stage('Terraform') {
             steps {
-                //sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
+                sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
                 //sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
-                sleep(1)
+                //sleep(1)
             }
         }
         stage('Copy links server to S3') {
