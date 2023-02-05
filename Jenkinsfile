@@ -42,7 +42,7 @@ pipeline {
                         echo DEVPUBIP = $DEVPUBIP
                         CURRDATE=$(date)
                         echo '===== Create dev-hosts.html =========================='
-                        cat << EOF > ./dev-hosts.html
+                        cat << -EOF > ./dev-hosts.html
                         <html>
                         <head>
                         <title> Dev-srv links </title>
@@ -53,8 +53,11 @@ pipeline {
                         <p> File created: $CURRDATE
                         </body>
                         </html>
-                        EOF'''
-                    //echo '=== finish Copy links server to S3  ====' 
+                        EOF
+                        '''
+                    
+                    
+                    echo '=== finish Copy links server to S3  ====' 
                 //}
             }
         }
