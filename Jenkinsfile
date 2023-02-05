@@ -34,11 +34,11 @@ pipeline {
                     sh '''
                         cd ${environment}
                         pwd
+                        
                         terraform output aws_instance_dev-srv_public_ip -no-color
-                        #echo 'second'
-                        #terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \"
-                        #echo 'theard'
-                        eval DEVPUBIP=terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \"
+                        echo 'second'
+                    
+                        DEVPUBIP=$(terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \")
                         echo DEVPUBIP = $DEVPUBIP
                         echo '===== Create dev-hosts.html =========================='
                         #cat <<EOF> ./dev-hosts.html
