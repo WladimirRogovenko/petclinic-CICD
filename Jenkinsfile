@@ -36,7 +36,7 @@ pipeline {
                         pwd
                         terraform output aws_instance_dev-srv_public_ip -no-color
                         echo 'second'
-                        terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \"
+                        #terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \"
                         echo 'theard'
                         DEVPUBIP=`terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \" `
                         echo DEVPUBIP = $DEVPUBIP
