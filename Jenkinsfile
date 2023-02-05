@@ -42,7 +42,7 @@ pipeline {
                         </head>
                         <body>
                         <p> Links to servers
-                        <a href="http://$DEVPUBIP:8082/">dev-srv</a>
+                        <a href=\"http://$DEVPUBIP:8082/\">dev-srv</a>
                         </body>
                         </html>
                         EOFF
