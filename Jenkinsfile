@@ -5,7 +5,8 @@ pipeline {
     parameters {
         //string(name: 'environment', defaultValue: 'dev', description: 'Workspace/environment file to use for deployment')
         choice(name: "environment", choices: ["dev", "main"], description: "Environment dir to use for deployment")
-        booleanParam(name: 'destroyNode', defaultValue: false, description: 'Automatically destroy Jenkins-Node after build?')
+        choice(name: "terraformAction", choices: ["apply", "destroy"], description: "Terraform action")
+        //booleanParam(name: 'destroyNode', defaultValue: false, description: 'Automatically destroy Jenkins-Node after build?')
     }
 
 
@@ -22,15 +23,16 @@ pipeline {
         stage('Terraform') {
             steps {
                 sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
-                sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
+                sh 'pwd;cd ${environment} ; terraform ${terraformAction} -auto-approve -no-color'
                 //sleep(1)
             }
         }
         stage('Copy links server to S3') {
+            when {
+                environment name: 'terraformAction', value: 'apply'
+            }
             steps {
-                //script {
                     echo '=== start Copy links server to S3  ====' 
-                    //#!/bin/bash
                     sh '''
                         cd ${environment}
                         pwd
@@ -57,15 +59,16 @@ pipeline {
                         cat ./dev-hosts.html
                         '''.stripIndent()
                     echo '=== finish create dev-hosts.html =========================='
-                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                      // copy LAST archive to /last_build/ (and replace if exists)
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                       sh "pwd;cd ${environment}; aws s3 cp ./dev-hosts.html s3://vladimir-rogovenko.pp.ua/dev-hosts.html"
                 } 
                     echo '=== finish Copy links server to S3  ====' 
-                //}
             }
         }
         stage('Wait Node-1 OnLine') {
+            when {
+                environment name: 'terraformAction', value: 'apply'
+            }
             options {
               timeout(time: 5, unit: 'MINUTES')   // timeout on this stage
             }
@@ -85,6 +88,9 @@ pipeline {
         }
 
         stage('Run 2nd job') {
+            when {
+                environment name: 'terraformAction', value: 'apply'
+            }
             steps {
                 echo '=== start run 2nd job  ====' 
                 echo "env = ${environment} $environment" //working both ))) becouse must be ""  and may try: env.environment
