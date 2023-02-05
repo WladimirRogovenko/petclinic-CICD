@@ -22,7 +22,7 @@ pipeline {
         stage('Terraform') {
             steps {
                 sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
-                //sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
+                sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
                 //sleep(1)
             }
         }
@@ -42,7 +42,7 @@ pipeline {
                         echo DEVPUBIP = $DEVPUBIP
                         CURRDATE=$(date)
                         echo '===== Create dev-hosts.html =========================='
-                        cat <<-EOF > ./dev-hosts.html
+                        cat <<"                        EOF" > ./dev-hosts.html
                         <html>
                         <head>
                         <title> Dev-srv links </title>
