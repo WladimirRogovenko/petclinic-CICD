@@ -40,18 +40,20 @@ pipeline {
                     
                         DEVPUBIP=$(terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \\")
                         echo DEVPUBIP = $DEVPUBIP
+                        CURRDATE=$(date)
                         echo '===== Create dev-hosts.html =========================='
-                        #cat <<EOF> ./dev-hosts.html
-                        #<html>
-                        #<head>
-                        #<title> Dev-srv links </title>
-                        #</head>
-                        #<body>
-                        #<p> Links to servers
-                        #<a href="http://$DEVPUBIP:8082/">dev-srv</a>
-                        #</body>
-                        #</html>
-                        #EOF
+                        cat <<EOF> ./dev-hosts.html
+                        <html>
+                        <head>
+                        <title> Dev-srv links </title>
+                        </head>
+                        <body>
+                        <p> Links to servers
+                        <a href="http://$DEVPUBIP:8082/">dev-srv</a>
+                        <p> File created: $CURRDATE
+                        </body>
+                        </html>
+                        EOF
                         echo '===== finish create dev-hosts.html =========================='
                     '''
                     //echo '=== finish Copy links server to S3  ====' 
