@@ -42,7 +42,7 @@ pipeline {
                         echo DEVPUBIP = $DEVPUBIP
                         CURRDATE=$(date)
                         echo '===== Create dev-hosts.html =========================='
-                        cat <<"                        EOF" > ./dev-hosts.html
+                        cat <<- EOF > ./dev-hosts.html
                         <html>
                         <head>
                         <title> Dev-srv links </title>
@@ -55,7 +55,7 @@ pipeline {
                         </html>
                         EOF
                         cat ./dev-hosts.html
-                        '''
+                        '''.stripIndent()
                     echo '=== finish create dev-hosts.html =========================='
                      withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                       // copy LAST archive to /last_build/ (and replace if exists)
