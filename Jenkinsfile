@@ -55,8 +55,11 @@ pipeline {
                         </html>
                         EOF
                         '''
-                    
-                    
+                    echo '=== finish create dev-hosts.html =========================='
+                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                      // copy LAST archive to /last_build/ (and replace if exists)
+                      sh "pwd;cd ${environment}; aws s3 cp ./dev-hosts.html s3://vladimir-rogovenko.pp.ua/dev-hosts.html"
+                } 
                     echo '=== finish Copy links server to S3  ====' 
                 //}
             }
