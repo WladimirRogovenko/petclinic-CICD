@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Copy links server to S3') {
             steps {
-                script {
+                //script {
                     echo '=== start Copy links server to S3  ====' 
                     //#!/bin/bash
                     sh '''
@@ -48,10 +48,9 @@ pipeline {
                         #</html>
                         #EOF
                         echo '===== finish create dev-hosts.html =========================='
-
                     '''
-                    echo '=== finish Copy links server to S3  ====' 
-                }
+                    //echo '=== finish Copy links server to S3  ====' 
+                //}
             }
         }
         stage('Wait Node-1 OnLine') {
