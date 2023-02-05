@@ -21,8 +21,8 @@ pipeline {
     stages {
         stage('Terraform') {
             steps {
-                sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
-                sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
+                //sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
+                //sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
                 //sleep(120)
             }
         }
@@ -31,8 +31,11 @@ pipeline {
                 //script {
                     echo '=== start Copy links server to S3  ====' 
                     //#!/bin/bash
-                    sh ```
+                    sh '''
                         cd ${environment}
+                        pwd
+                        terraform output aws_instance_dev-srv_public_ip -no-color
+                        terraform output aws_instance_dev-srv_public_ip -no-color | tr -d \"
                         DEVPUBIP=`terraform output aws_instance_dev-srv_public_ip -no-color` | tr -d \"
                         echo DEVPUBIP = $DEVPUBIP
                         echo '===== Create dev-hosts.html =========================='
@@ -48,7 +51,7 @@ pipeline {
                         #</html>
                         #EOF
                         echo '===== finish create dev-hosts.html =========================='
-                    ```
+                    '''
                     //echo '=== finish Copy links server to S3  ====' 
                 //}
             }
