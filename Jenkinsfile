@@ -27,6 +27,39 @@ pipeline {
                 //sleep(1)
             }
         }
+        stage('Copy UnAccesseble page to S3') {
+            when {
+                environment name: 'terraformAction', value: 'destroy'
+            }
+            steps {
+                    echo '=== start Copy UnAccesseble page to S3  ====' 
+                    sh '''
+                        cd ${environment}
+                        pwd
+                        
+                        CURRDATE=$(date)
+                        echo '===== Create dev-hosts.html =========================='
+                        cat <<- EOF > ./dev-hosts.html
+                        <html>
+                        <head>
+                        <title> Dev-srv links </title>
+                        </head>
+                        <body>
+                        <p> Sorry, but DEV-srv was not created. Please, create first.
+                        <p> DEV-srv was destroyed: $CURRDATE
+                        </body>
+                        </html>
+                        EOF
+                        cat ./dev-hosts.html
+                        '''.stripIndent()
+                    echo '=== finish create dev-hosts.html =========================='
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                      sh "pwd;cd ${environment}; aws s3 cp ./dev-hosts.html s3://vladimir-rogovenko.pp.ua/dev-hosts.html"
+                } 
+                    echo '=== finish Copy UnAccesseble page to S3  ====' 
+            }
+        }
+
         stage('Copy links server to S3') {
             when {
                 environment name: 'terraformAction', value: 'apply'
