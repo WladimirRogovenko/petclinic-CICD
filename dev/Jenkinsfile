@@ -28,7 +28,7 @@ pipeline {
             }
         stage('Biild number stemp') {
             steps {
-            sh 'echo "Pipeline source: GitURL ${GIT_URL} Branch name ${GIT_BRANCH}  \n" >> petclinic/src/main/resources/templates/welcome.html'
+            sh 'echo "Pipeline source: GitURL ${GIT_URL} Branch name ${GIT_BRANCH}  <BR>" >> petclinic/src/main/resources/templates/welcome.html'
             sh 'echo "Code source: WladimirRogovenko/petclinic.git  Branch name ${environment_code} Build # ${BUILD_NUMBER} Date: `date`" >> petclinic/src/main/resources/templates/welcome.html'
             }
         }

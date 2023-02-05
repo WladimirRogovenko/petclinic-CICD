@@ -1,3 +1,4 @@
+//terrform-dev
 import hudson.model.*
 pipeline {
 
@@ -23,6 +24,30 @@ pipeline {
                 sh 'pwd;cd ${environment} ; terraform init -input=false -no-color'
                 sh 'pwd;cd ${environment} ; terraform apply -auto-approve -no-color'
                 //sleep(120)
+            }
+        }
+        stage('Copy links server to S3') {
+            steps {
+                script {
+                    echo '=== start Copy links server to S3  ====' 
+                    sh '''
+                    DEVPUBIP = `terraform output aws_instance_dev-srv_public_ip`
+                    echo "DEVPUBIP = $DEVPUBIP"
+                    echo '===== Create dev-hosts.html =========================='
+                    cat << EOF > ./dev-hosts.html
+                    <html>
+                    <head>
+                    <title> Dev-srv links </title>
+                    </head>
+                    <body>
+                    <p> Links to servers
+                    <a href="http://$DEVPUBIP:8082/">dev-srv</a>
+                    </body>
+                    </html>
+                    EOF
+                    '''
+                    echo '=== finish Copy links server to S3  ====' 
+                }
             }
         }
         stage('Wait Node-1 OnLine') {
