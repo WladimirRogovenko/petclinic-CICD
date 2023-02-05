@@ -30,24 +30,24 @@ pipeline {
             steps {
                 script {
                     echo '=== start Copy links server to S3  ====' 
-                    sh '''
-                    cd ${environment}
-                    DEVPUBIP=`terraform output aws_instance_dev-srv_public_ip -no-color` | tr -d \"
-                    echo DEVPUBIP = $DEVPUBIP
-                    echo '===== Create dev-hosts.html =========================='
-                    cat << EOFF > ./dev-hosts.html
-                    <html>
-                    <head>
-                    <title> Dev-srv links </title>
-                    </head>
-                    <body>
-                    <p> Links to servers
-                    <a href="http://$DEVPUBIP:8082/">dev-srv</a>
-                    </body>
-                    </html>
-                    EOFF
-                    echo '===== finish create dev-hosts.html =========================='
-                    
+                    sh '''#!/bin/bash
+                        cd ${environment}
+                        DEVPUBIP=`terraform output aws_instance_dev-srv_public_ip -no-color` | tr -d \"
+                        echo DEVPUBIP = $DEVPUBIP
+                        echo '===== Create dev-hosts.html =========================='
+                        cat << EOFF > ./dev-hosts.html
+                        <html>
+                        <head>
+                        <title> Dev-srv links </title>
+                        </head>
+                        <body>
+                        <p> Links to servers
+                        <a href="http://$DEVPUBIP:8082/">dev-srv</a>
+                        </body>
+                        </html>
+                        EOFF
+                        echo '===== finish create dev-hosts.html =========================='
+
                     '''
                     echo '=== finish Copy links server to S3  ====' 
                 }
