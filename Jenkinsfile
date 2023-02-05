@@ -54,6 +54,7 @@ pipeline {
                         </body>
                         </html>
                         EOF
+                        cat ./dev-hosts.html
                         '''
                     echo '=== finish create dev-hosts.html =========================='
                      withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
