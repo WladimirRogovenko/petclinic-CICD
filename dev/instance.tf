@@ -1,7 +1,7 @@
 #create Instance Jenkins-Node-1
 resource "aws_instance" "jenkins-node-1" {
   ami           = "ami-03c476a1ca8e3ebdc" #Ubuntu Server 22.04 LTS (HVM), SSD Volume Type       #"ami-0493936afbe820b28"  # Ubuntu 20.04 server
-  instance_type = "t2.micro"
+  instance_type = "t3.small" #"t2.micro"
   key_name = "Jenkins-Nodes-key"                # jankins has this key too
   vpc_security_group_ids = [aws_security_group.secgrp-Linux_80_22.id]
   subnet_id = sort(data.aws_subnets.default.ids)[0]
