@@ -3,8 +3,8 @@
 pipeline {
 
     parameters {
-       choice(name: "environment_project", choices: ["dev", "main"], description: "Git branch for deployment")
-       choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+       choice(name: "environment_project", choices: ["dev", "main"], description: "Git branch petclinic-CICD")
+       //choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
     }
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')

@@ -29,7 +29,10 @@ pipeline {
         }
         stage('Copy UnAccesseble page to S3') {
             when {
-                environment name: 'terraformAction', value: 'destroy'
+                allOf {
+                        environment name: 'terraformAction', value: 'destroy'
+                        environment name: 'environment', value: 'dev'
+                }
             }
             steps {
                     echo '=== start Copy UnAccesseble page to S3  ====' 
@@ -62,7 +65,10 @@ pipeline {
 
         stage('Copy links server to S3') {
             when {
-                environment name: 'terraformAction', value: 'apply'
+                allOf {
+                        environment name: 'terraformAction', value: 'apply'
+                        environment name: 'environment', value: 'dev'
+                }
             }
             steps {
                     echo '=== start Copy links server to S3  ====' 
@@ -100,7 +106,10 @@ pipeline {
         }
         stage('Wait Node-1 OnLine') {
             when {
-                environment name: 'terraformAction', value: 'apply'
+                allOf {
+                    environment name: 'terraformAction', value: 'apply'
+                    environment name: 'environment', value: 'dev'
+                }
             }
             options {
               timeout(time: 5, unit: 'MINUTES')   // timeout on this stage
@@ -122,7 +131,10 @@ pipeline {
 
         stage('Run 2nd job') {
             when {
-                environment name: 'terraformAction', value: 'apply'
+                allOf {
+                    environment name: 'terraformAction', value: 'apply'
+                    environment name: 'environment', value: 'dev'
+                }
             }
             steps {
                 echo '=== start run 2nd job  ====' 
