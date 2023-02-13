@@ -38,6 +38,7 @@ MYSQL_USER=petclinic
 MYSQL_PASSWORD=petclinic
 MYSQL_DATABASE=petclinic
 
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination :8082
 EOF
 
 source /etc/profile.d/java_19_env.sh
