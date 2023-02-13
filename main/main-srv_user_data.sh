@@ -53,7 +53,7 @@ sudo mysql < ./petclinic_init.sql
 
 
 #java -jar ~/spring-petclinic-3.0.0-SNAPSHOT.jar --spring.profiles.active=mysql --server.port=8082 --spring.datasource.url=jdbc:mysql://localhost:3306/petclinic --spring.datasource.username=petclinic --spring.datasource.password=PetcliniC_567890
-#sudo mysql -u root -p petclinic < petclinic_backup_1.sql
+#sudo mysql -u root petclinic < petclinic_backup_1.sql
 
 echo "=== add github known_hosts ==="
 sudo ssh-keyscan github.com >> /home/ubuntu/.ssh/known_hosts

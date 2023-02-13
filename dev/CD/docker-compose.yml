@@ -5,6 +5,7 @@ services:
     image: spring-openjdk:1.3
     ports:
       - 8082:8082
+      - 80:80
     volumes:
       - /home/ubuntu/app:/opt/app:ro
     environment:

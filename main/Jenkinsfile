@@ -1,0 +1,62 @@
+//main-CD
+
+pipeline {
+
+    parameters {
+       choice(name: "environment_project", choices: ["dev", "main"], description: "Git branch for deployment")
+       choice(name: "environment_code", choices: ["dev", "main"], description: "Environment dir to use for deployment")
+    }
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+    agent { label 'jenkins-master' }
+        options {
+                timestamps ()
+            }
+    stages {
+        /*
+        stage('ping main-srv') {
+            steps {
+                echo '=== ping start ===='
+                
+                echo '=== ping finish ===='
+                }
+            }  
+        */
+        stage('Git checkout project') {
+            steps{
+               script{
+                        echo '=== start Git chekout project ==='
+                        dir("project")
+                        {
+                            git branch: '${environment_project}', credentialsId: 'jenkis-git-key', url: 'git@github.com:WladimirRogovenko/petclinic.git'
+                        }
+                        echo '=== end Git chekout project ==='
+                    
+                }
+            }
+        }
+        stage('Get last artefact from S3') {
+            steps {
+                echo '=== Get last artefact from S3 ==='
+                withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins-Nodes-key', keyFileVariable: 'TOKEN', usernameVariable: 'userNameInst')]) {
+                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "rm *.sql; AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID};export AWS_ACCESS_KEY_ID; AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}; export AWS_SECRET_ACCESS_KEY; aws s3 cp s3://p-petclinic2023-jenkins-archive-artifacts/last_build/ ./ --recursive"'
+                    sh 'scp -r -i ${TOKEN} project/mysql_db/conf.d/*.sql ${userNameInst}@172.31.47.3:/home/${userNameInst}'
+                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo mysql -u root petclinic < ./petclinic_backup_1.sql"'
+                }
+            }
+        }
+        stage('Run app') {
+            steps{
+                echo '=== start Run app ==='
+                withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins-Nodes-key', keyFileVariable: 'TOKEN', usernameVariable: 'userNameInst')]) {
+                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "kill -9 \\$(ps ax | grep app.jar | fgrep -v grep | awk \'{ print $1 }\')"'
+                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "rm app.jar; mv *.jar app.jar; source /etc/profile.d/java_19_env.sh; java -jar ./app.jar --spring.profiles.active=mysql --server.port=8082 --spring.datasource.url=jdbc:mysql://localhost:3306/petclinic --spring.datasource.username=petclinic --spring.datasource.password=PetcliniC_567890 > /dev/null 2>&1 &"'
+                 
+                }
+                echo '=== finish Run app ==='
+            }
+        }    
+    }
+}
