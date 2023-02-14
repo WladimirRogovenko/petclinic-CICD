@@ -28,8 +28,8 @@ pipeline {
             }
         stage('Biild number stemp') {
             when {
-                //environment name: 'BRANCH_NAME', value: 'dev'
-                branch 'dev'
+                environment name: 'environment_code', value: 'dev'
+                //branch 'dev'
             }
             
             steps {
