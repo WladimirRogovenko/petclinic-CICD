@@ -4,6 +4,8 @@ echo "===== Run user_data file for Jenkins Node 1 ======="
 echo '===== update =========================='
 sudo  apt update 
 pwd
+sudo timedatectl set-timezone Europe/Kyiv
+
 
 echo "===== AWS CLI install ======="
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
