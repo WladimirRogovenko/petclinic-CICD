@@ -37,9 +37,13 @@ MYSQL_ALLOW_EMPTY_PASSWORD=true
 MYSQL_USER=petclinic
 MYSQL_PASSWORD=petclinic
 MYSQL_DATABASE=petclinic
-sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination :8082
 EOF
 
+cat << EOF > /etc/profile.d/add_port_froward.sh
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination :8082
+EOF
+source /etc/profile.d/add_port_froward.sh
+sudo iptables -t nat -L -v
 source /etc/profile.d/java_19_env.sh
 java --version
 
