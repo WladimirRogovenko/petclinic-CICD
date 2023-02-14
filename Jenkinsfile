@@ -3,10 +3,8 @@ import hudson.model.*
 pipeline {
 
     parameters {
-        //string(name: 'environment', defaultValue: 'dev', description: 'Workspace/environment file to use for deployment')
         choice(name: "environment", choices: ["dev", "main"], description: "Environment dir to use for deployment")
         choice(name: "terraformAction", choices: ["apply", "destroy"], description: "Terraform action")
-        //booleanParam(name: 'destroyNode', defaultValue: false, description: 'Automatically destroy Jenkins-Node after build?')
     }
 
 
@@ -27,7 +25,7 @@ pipeline {
                 //sleep(1)
             }
         }
-        stage('Copy UnAccesseble page to S3') {
+        stage('Copy InAccesseble page to S3/dev-hosts.html') {
             when {
                 allOf {
                         environment name: 'terraformAction', value: 'destroy'
@@ -35,7 +33,7 @@ pipeline {
                 }
             }
             steps {
-                    echo '=== start Copy UnAccesseble page to S3  ====' 
+                    echo '=== start Copy InAccesseble page to S3/dev-hosts.html  ====' 
                     sh '''
                         cd ${environment}
                         pwd
@@ -59,11 +57,11 @@ pipeline {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                       sh "pwd;cd ${environment}; aws s3 cp ./dev-hosts.html s3://vladimir-rogovenko.pp.ua/dev-hosts.html"
                 } 
-                    echo '=== finish Copy UnAccesseble page to S3  ====' 
+                    echo '=== finish Copy InAccesseble page to S3/dev-hosts.html  ====' 
             }
         }
 
-        stage('Copy links server to S3') {
+        stage('Copy links server to S3/dev-hosts.html') {
             when {
                 allOf {
                         environment name: 'terraformAction', value: 'apply'
@@ -71,7 +69,7 @@ pipeline {
                 }
             }
             steps {
-                    echo '=== start Copy links server to S3  ====' 
+                    echo '=== start Copy links server to S3/dev-hosts.html  ====' 
                     sh '''
                         cd ${environment}
                         pwd
@@ -101,9 +99,89 @@ pipeline {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
                       sh "pwd;cd ${environment}; aws s3 cp ./dev-hosts.html s3://vladimir-rogovenko.pp.ua/dev-hosts.html"
                 } 
-                    echo '=== finish Copy links server to S3  ====' 
+                    echo '=== finish Copy links server to S3/dev-hosts.html  ====' 
             }
         }
+        
+        stage('Copy InAccesseble page to S3/main-hosts.html') {
+            when {
+                allOf {
+                        environment name: 'terraformAction', value: 'destroy'
+                        environment name: 'environment', value: 'main'
+                }
+            }
+            steps {
+                    echo '=== start Copy InAccesseble page to S3/main-hosts.html  ====' 
+                    sh '''
+                        cd ${environment}
+                        pwd
+                        
+                        CURRDATE=$(date)
+                        echo '===== Create dev-hosts.html =========================='
+                        cat <<- EOF > ./main-hosts.html
+                        <html>
+                        <head>
+                        <title> Dev-srv links </title>
+                        </head>
+                        <body>
+                        <p> Sorry, but MAIN-srv was not created. Please, create first.
+                        <p> DEV-srv was destroyed: $CURRDATE
+                        </body>
+                        </html>
+                        EOF
+                        cat ./main-hosts.html
+                        '''.stripIndent()
+                    echo '=== finish create main-hosts.html =========================='
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                      sh "pwd;cd ${environment}; aws s3 cp ./main-hosts.html s3://vladimir-rogovenko.pp.ua/main-hosts.html"
+                } 
+                    echo '=== finish Copy InAccesseble page to S3/main-hosts.html  ====' 
+            }
+        }
+
+        stage('Copy links server to S3/main-hosts.html') {
+            when {
+                allOf {
+                        environment name: 'terraformAction', value: 'apply'
+                        environment name: 'environment', value: 'main'
+                }
+            }
+            steps {
+                    echo '=== start Copy links server to S3/main-hosts.html  ====' 
+                    sh '''
+                        cd ${environment}
+                        pwd
+                        
+                        terraform output aws_instance_main-srv_public_ip -no-color
+                        echo 'second'
+                    
+                        DEVPUBIP=$(terraform output aws_instance_main-srv_public_ip -no-color | tr -d \\")
+                        echo DEVPUBIP = $DEVPUBIP
+                        CURRDATE=$(date)
+                        echo '===== Create dev-hosts.html =========================='
+                        cat <<- EOF > ./main-hosts.html
+                        <html>
+                        <head>
+                        <title> Main-srv links </title>
+                        </head>
+                        <body>
+                        <p> Links to servers
+                        <a href="http://$DEVPUBIP/">dev-srv</a>
+                        <p> File created: $CURRDATE
+                        </body>
+                        </html>
+                        EOF
+                        cat ./main-hosts.html
+                        '''.stripIndent()
+                    echo '=== finish create main-hosts.html =========================='
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 's3-artifact_storage_petclinic', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                      sh "pwd;cd ${environment}; aws s3 cp ./main-hosts.html s3://vladimir-rogovenko.pp.ua/main-hosts.html"
+                } 
+                    echo '=== finish Copy links server to S3/main-hosts.html  ====' 
+            }
+        }        
+        
+        
         stage('Wait Node-1 OnLine') {
             when {
                 allOf {
