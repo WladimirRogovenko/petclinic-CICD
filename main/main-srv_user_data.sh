@@ -37,7 +37,6 @@ MYSQL_ALLOW_EMPTY_PASSWORD=true
 MYSQL_USER=petclinic
 MYSQL_PASSWORD=petclinic
 MYSQL_DATABASE=petclinic
-
 sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination :8082
 EOF
 
