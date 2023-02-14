@@ -166,7 +166,7 @@ pipeline {
                         </head>
                         <body>
                         <p> Links to servers
-                        <a href="http://$DEVPUBIP/">dev-srv</a>
+                        <a href="http://$DEVPUBIP/">main-srv</a>
                         <p> File created: $CURRDATE
                         </body>
                         </html>
