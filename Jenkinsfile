@@ -125,7 +125,7 @@ pipeline {
                         </head>
                         <body>
                         <p> Sorry, but MAIN-srv was not created. Please, create first.
-                        <p> DEV-srv was destroyed: $CURRDATE
+                        <p> MAIN-srv was destroyed: $CURRDATE
                         </body>
                         </html>
                         EOF
