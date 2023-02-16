@@ -54,8 +54,9 @@ GRANT ALL PRIVILEGES ON *.* TO 'petclinic'@'localhost';
 flush privileges;
 create database petclinic;
 EOF
+sudo systemctl enable mysql
 sudo systemctl restart mysql
-sleep 3
+sleep 5
 sudo mysql < ./petclinic_init.sql
 
 

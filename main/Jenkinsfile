@@ -47,7 +47,7 @@ pipeline {
                     //sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo mysql -e \\"show databases;\\""'
                     echo "restart mysql"
                     sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "systemctl list-units | grep mysql"'
-                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "systemctl start mysql"'
+                    //sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo systemctl start mysql"'
                     sleep 10
                     sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo mysql -e \\"show databases;\\""'
                     sh 'scp -r -i ${TOKEN} project/mysql_db/conf.d/*.sql ${userNameInst}@172.31.47.3:/home/${userNameInst}'
