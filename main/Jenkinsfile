@@ -44,7 +44,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins-Nodes-key', keyFileVariable: 'TOKEN', usernameVariable: 'userNameInst')]) {
                     
                     sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "rm *.sql > /dev/null 2>&1; AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID};export AWS_ACCESS_KEY_ID; AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}; export AWS_SECRET_ACCESS_KEY; aws s3 cp s3://p-petclinic2023-jenkins-archive-artifacts/last_build/ ./ --recursive"'
-                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo systemctl restart mysql'
+                    sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo systemctl restart mysql"'
                     sh 'scp -r -i ${TOKEN} project/mysql_db/conf.d/*.sql ${userNameInst}@172.31.47.3:/home/${userNameInst}'
                     sleep(10)
                     sh 'ssh -o StrictHostKeyChecking=no -i ${TOKEN} ${userNameInst}@172.31.47.3 -C "sudo mysql -u root petclinic < ./petclinic_backup_1.sql"'
